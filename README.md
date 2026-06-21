@@ -3,7 +3,7 @@ Simple todo app using vite react.js work in progress. Very rough currently.
 
 ## Installation
 ```bash
-    git clone URL
+    git clone https://github.com/ValtierraXavier/Todo_App.git
     npm install
     npm run dev
 ```
