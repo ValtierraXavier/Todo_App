@@ -10,7 +10,7 @@ Simple todo app using vite react.js work in progress. Very rough currently.
 Then navigate to http://localhost:5173 in your browser of choice
 
 ## Actions
-Full CRUD Support(within state)
+Full CRUD Support (within React state)
 - Create
 - Read
 - Update

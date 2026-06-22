@@ -1,11 +1,11 @@
 import './App.css'
 import { useState } from "react"
 import { TodoItem } from "./components/TodoItem.jsx"
-import { completeTodo } from "./assets/local.storage.jsx"
+import { addTodo, completeTodo, getTodo, getAllTodos, removeTodo, editTodo } from "./services/storage.service.jsx"
 
 function App () {
 
-  const [todos, setTodos] = useState([])
+  const [todos, setTodos] = useState([...getAllTodos()])
 
   const [todo, setTodo] = useState({
     id:"",
@@ -38,11 +38,13 @@ function App () {
     if(editingId){
       setEditingId(false)
       const newTodo = {...todo}
+      editTodo(editingId, newTodo)
       setTodos(prev => 
         prev.map(oldTodo => 
           oldTodo.id === editingId
           ? newTodo
-          : oldTodo))
+          : oldTodo)
+        )
       setEditingId(null)
     }
 
@@ -52,9 +54,15 @@ function App () {
         id: crypto.randomUUID(),
         created: new Date().toLocaleDateString()
       }
+      addTodo(currentTodo)
+      // const saved = JSON.parse(localStorage.getItem("todos"))
+      // console.log(saved)
+      // localStorage.setItem("todos", JSON.stringify([...saved, currentTodo]))
       setTodos(prev => 
         [...prev, currentTodo]
       )
+
+
     }
     resetTodo()
   }
@@ -81,6 +89,7 @@ function App () {
   const handleDelete = (id) => {
     const notDeleted = todos.filter(todo => todo.id !== id) 
     setTodos(notDeleted)
+    removeTodo(id)
   }
   
   return (
