@@ -1,7 +1,8 @@
 import './App.css'
 import { useState } from "react"
-import { TodoItem } from "./components/TodoItem.jsx"
-import { addTodo, completeTodo, getTodo, getAllTodos, removeTodo, editTodo } from "./services/storage.service.jsx"
+import { addTodo, completeTodo, getAllTodos, removeTodo, editTodo } from "./services/storage.service.jsx"
+import { TodosList } from "./components/TodosList.jsx"
+import { AddTodoForm } from "./components/AddTodoForm.jsx"
 
 function App () {
 
@@ -14,6 +15,8 @@ function App () {
     complete: false,
     created: ""
   })
+
+  const [addFormOpen, setAddFormOpen] = useState(false)
 
   const [editingId, setEditingId] = useState(false)
 
@@ -33,10 +36,18 @@ function App () {
     })
   }
 
+  const prepEdit = (id) => {
+    setEditingId(true)
+    const oldTodo = todos.find(todo =>
+       todo.id === id
+      )
+    setTodo({...oldTodo})
+    setEditingId(id)
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     if(editingId){
-      setEditingId(false)
       const newTodo = {...todo}
       editTodo(editingId, newTodo)
       setTodos(prev => 
@@ -55,9 +66,6 @@ function App () {
         created: new Date().toLocaleDateString()
       }
       addTodo(currentTodo)
-      // const saved = JSON.parse(localStorage.getItem("todos"))
-      // console.log(saved)
-      // localStorage.setItem("todos", JSON.stringify([...saved, currentTodo]))
       setTodos(prev => 
         [...prev, currentTodo]
       )
@@ -76,15 +84,6 @@ function App () {
               :el
         ))
     }
-  
-  const prepEdit = (id) => {
-    setEditingId(true)
-    const oldTodo = todos.find(todo =>
-       todo.id === id
-      )
-    setTodo({...oldTodo})
-    setEditingId(id)
-  }
 
   const handleDelete = (id) => {
     const notDeleted = todos.filter(todo => todo.id !== id) 
@@ -92,52 +91,38 @@ function App () {
     removeTodo(id)
   }
   
+  const toggleAddForm = (command) => {
+    if(command === "open"){
+      setAddFormOpen(true)
+    }
+    if(command === "close"){
+      setAddFormOpen(false)
+    }
+    return
+  }
+
+
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <h1 className="App Title" >Todo App</h1>
-
-        <label htmlFor="itemInput">Item</label>
-        <input 
-          className="addInput" 
-          id = "itemInput" type="text" 
-          placeholder="Item" 
-          name="item" 
-          onChange={handleChange} 
-          value={todo.item}
+      <h1 className="App Title">Todo App</h1>
+      {addFormOpen || <button className="addFormOpenButton" onClick={()=>{toggleAddForm("open")}}>Add Todo</button>}
+      {
+        addFormOpen &&
+        <AddTodoForm 
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          editingId={editingId} 
+          todo={todo}
+          toggleAddForm = {toggleAddForm}
         />
-
-        <label htmlFor="descriptionInput">Description</label>
-        <textarea 
-          className="addInput" 
-          id = "descriptionInput" 
-          type="text" 
-          placeholder="Description" 
-          name='description' 
-          onChange={handleChange} 
-          value = {todo.description}
-        />
-
-        <button 
-          type="submit" 
-          className="addInput" 
-          id="submitButton"
-        >
-          {`${editingId? "Save Edits": "Add Todo"}`}
-        </button>
-      </form>
-      {todos.map((el)=>{
-        return(
-            <TodoItem 
-              key={el.id} 
-              data={el} 
-              handleComplete={handleComplete} 
-              prepEdit={prepEdit} 
-              editingId={editingId}
-              handleDelete={handleDelete}
-            />
-        )
-      })}
+      }
+      <TodosList 
+        listItems={todos}
+        handleComplete={handleComplete} 
+        prepEdit={prepEdit} 
+        editingId={editingId}
+        handleDelete={handleDelete}
+      />
     </>
   )
 }
