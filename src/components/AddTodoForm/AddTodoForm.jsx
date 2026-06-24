@@ -1,9 +1,14 @@
+import "./AddTodoForm.css"
+
 export const AddTodoForm = ({handleChange, handleSubmit, todo, editingId, toggleAddForm}) => {
     //prop for toggling "hidden"
     return(
-        <>
+        <div className="modal">
             <form onSubmit={handleSubmit}>
-                <h3>Add a Todo</h3>
+                <header className="formHeader">
+                    <h3>{`${editingId? "Edit": "Add"} a Todo`}</h3>
+                    <button className = "addFormCloseButton" onClick={()=>{toggleAddForm("close")}}>X</button>
+                </header>
                 <label htmlFor="itemInput">Item</label>
                 <input 
                 className="addInput" 
@@ -33,7 +38,6 @@ export const AddTodoForm = ({handleChange, handleSubmit, todo, editingId, toggle
                 {`${editingId? "Save Edits": "Add Todo"}`}
                 </button>
             </form>
-            <button classsName = "addFormCloseButton" onClick={()=>{toggleAddForm("close")}}>Close</button>
-      </>
+      </div>
     )
 }

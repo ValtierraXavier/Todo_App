@@ -1,8 +1,9 @@
 import './App.css'
 import { useState } from "react"
 import { addTodo, completeTodo, getAllTodos, removeTodo, editTodo } from "./services/storage.service.jsx"
-import { TodosList } from "./components/TodosList.jsx"
-import { AddTodoForm } from "./components/AddTodoForm.jsx"
+import { TodosList } from "./components/TodosList/TodosList.jsx"
+import { AddTodoForm } from "./components/AddTodoForm/AddTodoForm.jsx"
+import { AddTodoButton } from "./components/AddTodoButton/AddTodoButton.jsx"
 
 function App () {
 
@@ -43,6 +44,7 @@ function App () {
       )
     setTodo({...oldTodo})
     setEditingId(id)
+    setAddFormOpen(true)
   }
 
   const handleSubmit = (e) => {
@@ -97,15 +99,15 @@ function App () {
     }
     if(command === "close"){
       setAddFormOpen(false)
+      setEditingId(null)
+      resetTodo()
     }
     return
   }
 
 
   return (
-    <>
-      <h1 className="App Title">Todo App</h1>
-      {addFormOpen || <button className="addFormOpenButton" onClick={()=>{toggleAddForm("open")}}>Add Todo</button>}
+    <div className="todoApp">
       {
         addFormOpen &&
         <AddTodoForm 
@@ -116,6 +118,9 @@ function App () {
           toggleAddForm = {toggleAddForm}
         />
       }
+      <h1 className="appTitle">Todo App</h1>
+      {addFormOpen || <AddTodoButton className="AddTodoButton" toggleAddForm={toggleAddForm}/>}
+      
       <TodosList 
         listItems={todos}
         handleComplete={handleComplete} 
@@ -123,7 +128,7 @@ function App () {
         editingId={editingId}
         handleDelete={handleDelete}
       />
-    </>
+    </div>
   )
 }
 

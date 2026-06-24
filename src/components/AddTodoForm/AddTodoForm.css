@@ -1,0 +1,42 @@
+.modal{
+    display: flex;
+    position: fixed;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: rgba(128, 125, 125, 0.993);
+    height: 100%;
+    inset: 0;
+}
+
+.modal > form{
+    display: flex;
+    flex-flow: column;
+    position: relative;
+    width: 50%;
+    background-color: lightgrey;
+    border-radius: 10px;
+    padding: .5rem;
+}
+
+.formHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 1%;
+}
+
+.addFormCloseButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+
+}
+
+.modal > form .addInput{
+    margin: 1%;
+    padding: 1%;
+}
