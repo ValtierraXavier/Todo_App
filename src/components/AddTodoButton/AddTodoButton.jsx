@@ -1,6 +1,11 @@
+import "./AddTodoButton.css"
 export const AddTodoButton = ({toggleAddForm}) => {
     // show the AddTodoForm
     return (
-        <button className="addFormOpenButton" onClick={()=>{toggleAddForm("open")}}>Add Todo</button>
+        <button className="addFormOpenButton" onClick={
+            ()=>{toggleAddForm("open")}}
+        >
+                Add Todo
+        </button>
     )
 }

@@ -1,14 +1,21 @@
-
+import "./TodoItem.css"
 export const TodoItem = ({data, handleComplete, prepEdit, editingId, handleDelete}) => {
     return(
-        <>
-            <h3>{data.item}</h3>
-            <p>{data.description}</p>
-            <p>{new Date(data.created).toLocaleDateString()}</p>
-            <p>{data.complete? `Completed : ${new Date().toLocaleDateString()}`: "Incomplete"}</p>
-            <button className="actionButton" id={data.id} onClick={() => {handleComplete(data.id)}} disabled={data.complete}>complete</button>
-            <button className="actionButton" id={data.id} onClick={() => prepEdit(data.id)} disabled={data.complete||editingId}>Edit</button>
-            <button className="actionButton" id={data.id} onClick={() => handleDelete(data.id)}>Delete</button>
-        </>
+        <div className="todoItem">
+            <div className="texts">
+            <h4 className="todoName">{data.item}</h4>
+            <p className="todoDescription">{data.description}</p>
+            </div>
+            <div className="completion">
+                <p>{data.complete? ` Task completed : ${new Date().toLocaleDateString()}`: "Task incomplete"}</p>
+                <p>{`Created: ${new Date(data.created).toLocaleDateString()}`}</p>
+                <p>{`Due: ${new Date(data.created).toLocaleDateString()}`}</p>
+            </div>
+            <div className="actionButtons">
+                <button className="actionButton" id={data.id} onClick={() => {handleComplete(data.id)}} disabled={data.complete}>Complete</button>
+                <button className="actionButton" id={data.id} onClick={() => prepEdit(data.id)} disabled={data.complete||editingId}>Edit</button>
+                <button className="actionButton" id={data.id} onClick={() => handleDelete(data.id)}>Delete</button>
+            </div>
+        </div>
     )
 }

@@ -75,6 +75,7 @@ function App () {
 
     }
     resetTodo()
+    toggleAddForm("close")
   }
 
   const handleComplete = (id) => {

@@ -1,1 +1,51 @@
 
+.todoItem{
+    display: flex;
+    border: solid black 2px;
+    position: relative;
+    border-radius: 10px;
+    width: 40rem;
+    flex-direction: row;
+    padding: .5rem;
+    justify-content: space-between;
+    margin-bottom: .5rem;
+}
+
+.actionButtons{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 6rem;
+    justify-content: center;
+}
+
+.actionButtons > button{
+    margin: .2rem;
+    border-radius: 10px;
+}
+
+.todoDescription{
+    position: relative;
+    overflow-y: auto;
+    text-overflow: clip;
+    max-width: 200px;
+    min-width: 100px;
+    color: grey;
+    max-height: 3rem;
+}
+
+.actionButtons > :nth-child(3){
+    background-color: coral;
+}
+.actionButtons > :nth-child(1){
+    background-color: lightseagreen;
+}
+
+.texts{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-width: 15rem;
+    max-width: 20rem;
+    /* border: solid green; */
+}
