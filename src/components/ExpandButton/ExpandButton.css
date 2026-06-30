@@ -1,0 +1,15 @@
+
+.chevron{
+    display: flex;
+    position: relative;
+    height: 1rem;
+    justify-content: space-around;
+    align-items: center;
+    transform: rotate(0deg);
+    transition: transform 250ms ease-in-out;
+}
+
+.chevron.expanded{
+    transform: rotate(180deg);
+    transition: transform 250ms ease-in-out;
+}

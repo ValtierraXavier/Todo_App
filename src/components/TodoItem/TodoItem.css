@@ -1,4 +1,3 @@
-
 .todoItem{
     display: flex;
     border: solid black 2px;
@@ -25,13 +24,14 @@
 }
 
 .todoDescription{
+    flex-grow: 2;
     position: relative;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     text-overflow: clip;
     max-width: 200px;
     min-width: 100px;
     color: grey;
-    max-height: 3rem;
+    height: 3rem;
 }
 
 .actionButtons > :nth-child(3){
@@ -44,8 +44,8 @@
 .texts{
     display: flex;
     flex-direction: column;
-    position: relative;
-    min-width: 15rem;
-    max-width: 20rem;
+    position: inline-block;
+    height: 100%;
+    width: 50%;
     /* border: solid green; */
 }

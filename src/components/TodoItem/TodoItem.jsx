@@ -1,10 +1,12 @@
 import "./TodoItem.css"
+import { ItemDescription } from"../ItemDescription/ItemDescription.jsx"
+
 export const TodoItem = ({data, handleComplete, prepEdit, editingId, handleDelete}) => {
     return(
         <div className="todoItem">
             <div className="texts">
-            <h4 className="todoName">{data.item}</h4>
-            <p className="todoDescription">{data.description}</p>
+                <h4 className="todoName">{data.item}</h4>
+                <ItemDescription className="todoDescription" text={data.description} />
             </div>
             <div className="completion">
                 <p>{data.complete? ` Task completed : ${new Date().toLocaleDateString()}`: "Task incomplete"}</p>
