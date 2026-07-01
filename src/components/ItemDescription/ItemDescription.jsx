@@ -18,15 +18,6 @@ export const ItemDescription = ({id, text}) => {
         }
     ,[text])
 
-    //this sets the expanded state which will trigger a change in the height css. 
-    // const expandDescription = () => {
-    //     const leftSide = document.getElementById("leftSide")
-    //     const rightSide = document.getElementById("rightSide")
-    //     const textBox = document.getElementById("descriptionText")
-    // }
-    //maybe useEffect to hadndle the transformation effect when expanded value is changed. 
-
-
     
     return(
         <div className="itemDescription" key={id}>
