@@ -1,13 +1,13 @@
 import './App.css'
-import { useState } from "react"
-import { addTodo, completeTodo, getAllTodos, removeTodo, editTodo } from "./services/storage.service.jsx"
+import { useEffect, useState } from "react"
+import { addTodo, completeTodo, getAllTodos, removeTodo, editTodo } from "./services/storage.service.js"
 import { TodosList } from "./components/TodosList/TodosList.jsx"
 import { AddTodoForm } from "./components/AddTodoForm/AddTodoForm.jsx"
 import { AddTodoButton } from "./components/AddTodoButton/AddTodoButton.jsx"
 
 function App () {
 
-  const [todos, setTodos] = useState([...getAllTodos()])
+  const [todos, setTodos] = useState([])
 
   const [todo, setTodo] = useState({
     id:"",
@@ -20,6 +20,15 @@ function App () {
   const [addFormOpen, setAddFormOpen] = useState(false)
 
   const [editingId, setEditingId] = useState(false)
+
+
+  useEffect(() => {
+    const loadTodos = async () => {
+      const data = await getAllTodos()
+      setTodos(Array.isArray(data)? data: [])
+    }
+    loadTodos()
+  }, [])
 
   const handleChange = (e) => {
     setTodo(prev => (
