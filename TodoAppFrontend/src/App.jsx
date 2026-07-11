@@ -26,6 +26,7 @@ function App () {
     const loadTodos = async () => {
       const data = await getAllTodos()
       setTodos(Array.isArray(data)? data: [])
+      // console.log(data)
     }
     loadTodos()
   }, [])

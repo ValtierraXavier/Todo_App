@@ -1,3 +1,4 @@
+import "./TodosList.css"
 import{ TodoItem } from "../TodoItem/TodoItem.jsx"
 export const TodosList = ({listItems, handleComplete, prepEdit, editingId, handleDelete}) => {
     return(

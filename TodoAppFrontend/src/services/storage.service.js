@@ -23,6 +23,7 @@ export const getAllTodos = async () => {
     if(!response){
         throw new Error(`Response status: ${response.status}`)
     }
+    
     return await response.json()
 }
 
