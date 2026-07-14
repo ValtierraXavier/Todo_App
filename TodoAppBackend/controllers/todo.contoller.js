@@ -2,7 +2,7 @@ import fs from "node:fs/promises"
 import path from "node:path"
 import { pool } from "../server.js"
 
-const storagePath = path.join(process.cwd(),"tempStorage.json")
+// const storagePath = path.join(process.cwd(),"tempStorage.json")
 
 export const getAllTodos = async (req, res) => {
     // const file = await fs.readFile(storagePath, "utf8")
@@ -22,7 +22,6 @@ export const getAllTodos = async (req, res) => {
 }
 
 export const getTodoById = async (req, res) => {
-    const id = req.params.id
     // const todos = JSON.parse(await fs.readFile(storagePath))
     // res.status(200).json(todos.find(todo => id === todo.id))
     const response = await pool.query(`
@@ -30,13 +29,12 @@ export const getTodoById = async (req, res) => {
                 todos
             WHERE 
                 id = $1
-        `,[id]
+        `,[req.user.user_id]
 )
     const todo = response.rows
     res.status(200).json(todo)
 }
 export const createTodo = async (req, res) => {
-    const todo = req.body
     // const todos = JSON.parse(await fs.readFile(storagePath))
     // fs.writeFile(storagePath, JSON.stringify([...todos, todo], null, 2))
     const response = await pool.query(`
@@ -44,16 +42,16 @@ export const createTodo = async (req, res) => {
                 (item, description)
             values
                 ($1, $2)
+            WHERE 
+                user_id = $3
             RETURNING *
         `,
-        [todo.item, todo.description]
+        [req.body.item, req.body.description, req.user.user_id]
     )
     res.status(200).json(response.rows[0])
 }
 
 export const updateTodo = async (req, res) => {
-    const id = req.params.id
-    const edits = req.body
     // const todos = JSON.parse(await fs.readFile(storagePath))
     // const index = todos.findIndex(todo => todo.id === id)
     // if(index < 0)(
@@ -75,14 +73,13 @@ export const updateTodo = async (req, res) => {
             id = $3
         RETURNING *
     `,
-        [edits.item, edits.description, id]
+        [req.body.item, req.body.description, req.user.user_id]
     )
     res.status(200).json(response.rows[0])
 }
     
 
 export const deleteTodo = async (req, res) => {
-    const id = req.params.id
     // const todos = JSON.parse(await fs.readFile(storagePath))
     // const index = todos.findIndex(todo => id === todo.id)
 
@@ -95,15 +92,17 @@ export const deleteTodo = async (req, res) => {
         `
             DELETE FROM
                 todos
-            WHERE id = $1
+            WHERE 
+                id = $1
+            AND
+                user_id = $2
         `,
-        [id]
+        [req.body.id, req.user.user_id]
     )
     res.status(200)
 }
 
 export const completeTodo = async (req, res) => {
-    const id = req.params.id
     // const todos = JSON.parse(await fs.readFile(storagePath))
     // const index = todos.findIndex(todo => id === todo.id)
 
@@ -122,7 +121,7 @@ export const completeTodo = async (req, res) => {
                 id = $1
             RETURNING *
         `,
-        [id]
+        [req.body.id, req.user.user_id]
     )
     res.status(200).json(response.rows[0])
 }

@@ -1,13 +1,14 @@
 import Router from "express"
 import * as todoController from "../controllers/todo.contoller.js"
+import { requireAuth } from "../middleware/auth.middleware.js";
 
 const router = Router()
 
-router.get("/", todoController.getAllTodos)
-router.get("/:id", todoController.getTodoById)
-router.post("/", todoController.createTodo)
-router.put("/:id", todoController.updateTodo)
-router.put("/complete/:id", todoController.completeTodo)
-router.delete("/:id", todoController.deleteTodo)
+router.get("/", requireAuth, todoController.getAllTodos)
+router.get("/:id", requireAuth, todoController.getTodoById)
+router.post("/", requireAuth, todoController.createTodo)
+router.put("/:id", requireAuth, todoController.updateTodo)
+router.put("/complete/:id", requireAuth, todoController.completeTodo)
+router.delete("/", requireAuth, todoController.deleteTodo)
 
 export default router
