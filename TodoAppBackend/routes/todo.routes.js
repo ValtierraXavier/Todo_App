@@ -7,7 +7,7 @@ const router = Router()
 router.get("/", requireAuth, todoController.getAllTodos)
 router.get("/:id", requireAuth, todoController.getTodoById)
 router.post("/", requireAuth, todoController.createTodo)
-router.put("/:id", requireAuth, todoController.updateTodo)
+router.put("/", requireAuth, todoController.updateTodo)
 router.put("/complete/:id", requireAuth, todoController.completeTodo)
 router.delete("/", requireAuth, todoController.deleteTodo)
 

@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken"
 
 export const requireAuth = async (req, res, next) => {
-    const authHeader = req.headers.authorization 
-    if(!authHeader?.startsWith("Bearer ")){
+    const authHeader = req.headers.cookie
+    if(!authHeader?.startsWith("token=")){
         return res.status(401).json(
             {
                 error:{
@@ -12,13 +12,13 @@ export const requireAuth = async (req, res, next) => {
             }
         )
     }
-    const token = authHeader.split(" ")[1]
+    const token = authHeader.split("=")[1]
+
 
     try{
         const payload = jwt.verify(token, process.env.secret)
 
         req.user = payload
-
         next()
     }catch(err){
         res.send(401).json(

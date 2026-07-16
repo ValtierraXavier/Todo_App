@@ -1,9 +1,9 @@
 import "./AddTodoButton.css"
-export const AddTodoButton = ({toggleAddForm}) => {
+export const AddTodoButton = ({setActiveModal}) => {
     // show the AddTodoForm
     return (
         <button className="addFormOpenButton" onClick={
-            ()=>{toggleAddForm("open")}}
+            ()=>{setActiveModal("addTodo")}}
         >
                 Add Todo
         </button>

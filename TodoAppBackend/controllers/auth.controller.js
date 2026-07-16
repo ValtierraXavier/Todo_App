@@ -1,35 +1,34 @@
-import pool from "../server.js"
+import { pool } from "../server.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 
 export const getUserById = async (req, res) => {
-    const userId = req.user.user_id
+    const user_id = req.user.user_id
     const response = await pool.query(
         `
             SELECT 
-                * 
+                email, user_id
             FROM 
                 users
             WHERE 
                 id = $1
         `,
-        [id]
-    )        
+        [user_id]
+    )
     res.status(200).json(response.rows[0])
 }
 
 //email checked for existence at this point. create JWT and send to user. 
 
 export const userLogin = async (req, res) => {
-    const response = pool.query(
+    const response = await pool.query(
         `
-            SELECT user_id, email, hash
+            SELECT user_id, email, password_hash
             FROM users
             WHERE email = $1
         `,
         [req.body.email]
     )
-
     const user = response.rows[0]
 
     if(!user){
@@ -41,7 +40,7 @@ export const userLogin = async (req, res) => {
         })
     }
     
-    const match = bcrypt.compare(
+    const match = await bcrypt.compare(
         req.body.password,
         user.password_hash
     )
@@ -65,8 +64,17 @@ export const userLogin = async (req, res) => {
             expiresIn: "1h"
         }
     )
-
-    res.status(200).json(token)    
+    res.status(200).cookie("token", token,{
+        httpOnly: true,
+        maxAge: (60 * 60 * 1000),
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production"
+    }).json({
+        user: {
+            user_id: user.user_id,
+            email: user.email
+        }
+    })  
 }
 
 
@@ -98,8 +106,13 @@ export const createNewUser = async (req, res) => {
 }
 
 export const userLogout = async (req, res) => {
-
-
+    res.clearCookie("token",{
+        secure: process.env.NODE_ENV === "production",
+        sameSite: 'lax',
+        httpOnly: true
+    })
+    
+    res.status(204)
 }
 
 export const deleteUser = async (req, res) => {

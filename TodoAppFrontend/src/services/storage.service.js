@@ -19,7 +19,10 @@ export  const getTodo = async (id) => {
 }
 
 export const getAllTodos = async () => {
-    const response = await fetch(backEndUrl)
+    const response = await fetch(backEndUrl,{
+        method: "GET",
+        credentials: "include"
+    })
     if(!response){
         throw new Error(`Response status: ${response.status}`)
     }
@@ -32,6 +35,7 @@ export const addTodo = async (todo) => {
     console.log(todo)
     const response = await fetch(backEndUrl,{
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
@@ -45,22 +49,26 @@ export const addTodo = async (todo) => {
 }
 
 export  const editTodo = async (id, edit) => {
-    const req = await fetch(`${backEndUrl}/${id}`, {
+    try{
+        const req = await fetch(`${backEndUrl}`, {
         method: "PUT",
+        credentials: "include",
         headers:{
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(edit)        
+        body: JSON.stringify(edit, id)        
     })
-    if(!req.ok) throw new Error(`Could not edit todo. Status:${req.status}`)
+        return await req.json()
+    }catch(err){console.log(err)}
+    // if(!req.ok) throw new Error(`Could not edit todo. Status:${req.status}`)
     
-    return await req.json()
 }
 
 
 export const removeTodo = async (id) => {
     const response = await fetch(`${backEndUrl}/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include"
     })
     if(!response.ok){
         throw new Error(`Could not delete todo. Status:${response.status}`)
@@ -71,7 +79,8 @@ export const removeTodo = async (id) => {
 
 export const completeTodo = async (id) => {
     const response = await fetch(`${backEndUrl}/complete/${id}`, {
-        method: "PUT"
+        method: "PUT",
+        credentials: "include"
     })
     if(!response.ok){
         throw new Error(`Could not complete todo. Status:${response.status}`)

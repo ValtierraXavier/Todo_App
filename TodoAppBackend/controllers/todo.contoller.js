@@ -71,9 +71,11 @@ export const updateTodo = async (req, res) => {
             description = $2
         WHERE 
             id = $3
+        AND
+            user_id = $4
         RETURNING *
     `,
-        [req.body.item, req.body.description, req.user.user_id]
+        [req.body.item, req.body.description, req.body.id, req.user.user_id]
     )
     res.status(200).json(response.rows[0])
 }

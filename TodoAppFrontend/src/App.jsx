@@ -4,9 +4,10 @@ import { addTodo, completeTodo, getAllTodos, removeTodo, editTodo } from "./serv
 import { TodosList } from "./components/TodosList/TodosList.jsx"
 import { AddTodoForm } from "./components/AddTodoForm/AddTodoForm.jsx"
 import { AddTodoButton } from "./components/AddTodoButton/AddTodoButton.jsx"
+import { SignUpForm} from "./components/SignUp/SignUpForm.jsx"
+import { LoginForm } from './components/Login/LoginForm.jsx';
 
 function App () {
-
   const [todos, setTodos] = useState([])
 
   const [todo, setTodo] = useState({
@@ -17,7 +18,7 @@ function App () {
     created: ""
   })
 
-  const [addFormOpen, setAddFormOpen] = useState(false)
+  const [activeModal, setActiveModal] = useState('')
 
   const [editingId, setEditingId] = useState(false)
 
@@ -47,13 +48,12 @@ function App () {
   }
 
   const prepEdit = (id) => {
-    setEditingId(true)
     const oldTodo = todos.find(todo =>
        todo.id === id
       )
     setTodo({...oldTodo})
     setEditingId(id)
-    setAddFormOpen(true)
+    setActiveModal("addTodo")
   }
 
   const handleSubmit = (e) => {
@@ -84,7 +84,7 @@ function App () {
 
     }
     resetTodo()
-    toggleAddForm("close")
+    setActiveModal("")
   }
 
   const handleComplete = (id) => {
@@ -105,21 +105,30 @@ function App () {
   
   const toggleAddForm = (command) => {
     if(command === "open"){
-      setAddFormOpen(true)
+      setActiveModal("addTodo")
     }
     if(command === "close"){
-      setAddFormOpen(false)
+      setActiveModal("")
       setEditingId(null)
       resetTodo()
     }
     return
   }
 
-
   return (
     <div className="todoApp">
+      <nav className="navBar">
+        <input type="button" className="signupButton" name="signUp" value="Sign Up" onClick={(e)=>{setActiveModal(e.target.name)}} />
+        <input type="button" className="loginButton" name="logIn" value="Log In" onClick={(e)=>{setActiveModal(e.target.name)}} />
+      </nav>
+      {activeModal === "signUp" &&
+        <SignUpForm setActiveModal = {setActiveModal}/>
+      }
+      {activeModal === "logIn" &&
+        <LoginForm setActiveModal = {setActiveModal}/>
+      }
       {
-        addFormOpen &&
+        activeModal === "addTodo" &&
         <AddTodoForm 
           handleChange={handleChange}
           handleSubmit={handleSubmit}
@@ -129,7 +138,7 @@ function App () {
         />
       }
       <h1 className="appTitle">Todo App</h1>
-      {addFormOpen || <AddTodoButton className="AddTodoButton" toggleAddForm={toggleAddForm}/>}
+      {activeModal === "addTodo" || <AddTodoButton className="AddTodoButton" setActiveModal={setActiveModal}/>}
       
       <TodosList 
         listItems={todos}
