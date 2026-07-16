@@ -125,7 +125,7 @@ function App () {
         <SignUpForm setActiveModal = {setActiveModal}/>
       }
       {activeModal === "logIn" &&
-        <LoginForm setActiveModal = {setActiveModal}/>
+        <LoginForm setActiveModal = {setActiveModal} />
       }
       {
         activeModal === "addTodo" &&

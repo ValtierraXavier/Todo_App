@@ -11,7 +11,14 @@
 const backEndUrl = "http://localhost:3000/todos"
 
 export  const getTodo = async (id) => {
-    const response = await fetch(`${backEndUrl}/${id}`)
+    const response = await fetch(`${backEndUrl}`,{
+        method: "GET",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({id})
+    })
     if(!response.ok){
         throw new Error(`unable to find todo.(${response.status})`)
     }
@@ -66,10 +73,15 @@ export  const editTodo = async (id, edit) => {
 
 
 export const removeTodo = async (id) => {
-    const response = await fetch(`${backEndUrl}/${id}`, {
-        method: "DELETE",
-        credentials: "include"
-    })
+    const response = await fetch(backEndUrl, {
+            method: "DELETE",
+            credentials: "include",
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({id})
+        }
+    )
     if(!response.ok){
         throw new Error(`Could not delete todo. Status:${response.status}`)
     }
@@ -78,9 +90,13 @@ export const removeTodo = async (id) => {
 }
 
 export const completeTodo = async (id) => {
-    const response = await fetch(`${backEndUrl}/complete/${id}`, {
+    const response = await fetch(`${backEndUrl}/complete`, {
         method: "PUT",
-        credentials: "include"
+        credentials: "include",
+        headers:{
+                "Content-Type": "application/json"
+            },
+        body: JSON.stringify({id})
     })
     if(!response.ok){
         throw new Error(`Could not complete todo. Status:${response.status}`)
