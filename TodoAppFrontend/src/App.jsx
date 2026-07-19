@@ -1,153 +1,104 @@
 import './App.css'
 import { useEffect, useState } from "react"
-import { addTodo, completeTodo, getAllTodos, removeTodo, editTodo } from "./services/storage.service.js"
-import { TodosList } from "./components/TodosList/TodosList.jsx"
-import { AddTodoForm } from "./components/AddTodoForm/AddTodoForm.jsx"
-import { AddTodoButton } from "./components/AddTodoButton/AddTodoButton.jsx"
+import { checkUser } from "./services/user.service.js"
+
+import { TodoInterface } from "./components/TodoInterface/TodoInterface.jsx"
 import { SignUpForm} from "./components/SignUp/SignUpForm.jsx"
 import { LoginForm } from './components/Login/LoginForm.jsx';
 
 function App () {
-  const [todos, setTodos] = useState([])
+/*
+  State below will be moved elsewhere(eventually) it needs userAuthenticated and an authLoading state
+  authLoading{defualt: true} => becomes false after the server has responded. at which point 
+  userAuthenticated{defualt: false} => will remain false if the response contained no user object. or true if it did. at which point
+  conditional rendering will either mount the landing page or the todoApp. with acces to backend using users credentials. 
+*/
 
-  const [todo, setTodo] = useState({
-    id:"",
-    item: "",
-    description: "",
-    complete: false,
-    created: ""
-  })
+  const [authLoading, setAuthLoading] = useState(true)
 
-  const [activeModal, setActiveModal] = useState('')
+  const [currentUser, setCurrentUser] = useState(null)
 
-  const [editingId, setEditingId] = useState(false)
+  const [activeModal, setActiveModal] = useState('signUp')
 
+  /*
+  this needs to return a landing page(signUp form, login button) or the todo app(as it currently is) depending on whether
+  the userAuthenticated is null or not.
+  that way user is directed to the landing page. and is not presented with a blank todoApp page.
+  */
 
   useEffect(() => {
-    const loadTodos = async () => {
-      const data = await getAllTodos()
-      setTodos(Array.isArray(data)? data: [])
+    const initCheck = async () => {
+      const user = await checkUser()
+      setAuthLoading(false)
+      setCurrentUser(user)
     }
-    loadTodos()
-  }, [])
-
-  const handleChange = (e) => {
-    setTodo(prev => (
-      {...prev, [e.target.name]: e.target.value}
-    ))
-  }
-
-  const resetTodo = () => {
-    setTodo({
-      id:"",
-      item: "",
-      description: "",
-      complete: false,
-      created: ""
-    })
-  }
-
-  const prepEdit = (id) => {
-    const oldTodo = todos.find(todo =>
-       todo.id === id
-      )
-    setTodo({...oldTodo})
-    setEditingId(id)
-    setActiveModal("addTodo")
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if(editingId){
-      const newTodo = {...todo}
-      editTodo(editingId, newTodo)
-      setTodos(prev => 
-        prev.map(oldTodo => 
-          oldTodo.id === editingId
-          ? newTodo
-          : oldTodo)
-        )
-      setEditingId(null)
-    }
-
-    if(!editingId){
-      const currentTodo = {
-        ...todo,
-        id: crypto.randomUUID(),
-        created: new Date().toLocaleDateString()
-      }
-      addTodo(currentTodo)
-      setTodos(prev => 
-        [...prev, currentTodo]
-      )
-
-
-    }
-    resetTodo()
-    setActiveModal("")
-  }
-
-  const handleComplete = (id) => {
-        completeTodo(id)
-        setTodos(prev => 
-          prev.map(el => 
-            el.id === id
-              ?{...el, complete: true}
-              :el
-        ))
-    }
-
-  const handleDelete = (id) => {
-    const notDeleted = todos.filter(todo => todo.id !== id) 
-    setTodos(notDeleted)
-    removeTodo(id)
-  }
-  
-  const toggleAddForm = (command) => {
-    if(command === "open"){
-      setActiveModal("addTodo")
-    }
-    if(command === "close"){
-      setActiveModal("")
-      setEditingId(null)
-      resetTodo()
-    }
-    return
-  }
-
+    initCheck()    
+    }, [])
+    
   return (
     <div className="todoApp">
-      <nav className="navBar">
-        <input type="button" className="signupButton" name="signUp" value="Sign Up" onClick={(e)=>{setActiveModal(e.target.name)}} />
-        <input type="button" className="loginButton" name="logIn" value="Log In" onClick={(e)=>{setActiveModal(e.target.name)}} />
-      </nav>
-      {activeModal === "signUp" &&
-        <SignUpForm setActiveModal = {setActiveModal}/>
-      }
-      {activeModal === "logIn" &&
-        <LoginForm setActiveModal = {setActiveModal} />
-      }
-      {
-        activeModal === "addTodo" &&
-        <AddTodoForm 
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-          editingId={editingId} 
-          todo={todo}
-          toggleAddForm = {toggleAddForm}
-        />
-      }
-      <h1 className="appTitle">Todo App</h1>
-      {activeModal === "addTodo" || <AddTodoButton className="AddTodoButton" setActiveModal={setActiveModal}/>}
       
-      <TodosList 
-        listItems={todos}
-        handleComplete={handleComplete} 
-        prepEdit={prepEdit} 
-        editingId={editingId}
-        handleDelete={handleDelete}
-      />
+      {
+        authLoading
+        ?<div className="loadingScreen">Loading...</div>
+          :!currentUser
+            ?<div className="credentialInput">
+                {activeModal === "signUp" && 
+                  <>
+                    <input type="button" className="loginButton" name="logIn" value="Log In" onClick={(e)=>{setActiveModal(e.target.name)}} />
+                    <SignUpForm setActiveModal = {setActiveModal} setCurrentUser={setCurrentUser}/>
+                  </>
+                }
+                {activeModal === "logIn" &&
+                <>
+                  <input type="button" className="signupButton" name="signUp" value="Sign Up" onClick={(e)=>{setActiveModal(e.target.name)}} />
+                  <LoginForm setActiveModal = {setActiveModal} setCurrentUser={setCurrentUser}/>
+                </>
+                }
+            </div>
+            :<TodoInterface setCurrentUser={setCurrentUser} currentUser={currentUser}/>
+      }
     </div>
+
+    // {
+    //  work on this after breakfast
+
+    //   authLoading? <div>"loading"</div>: currentUser? <TodoApp/>: <landing/>
+    // }
+
+    // <div className="todoApp">
+    //   <nav className="navBar">
+    //     <input type="button" className="signupButton" name="signUp" value="Sign Up" onClick={(e)=>{setActiveModal(e.target.name)}} />
+    //     <input type="button" className="loginButton" name="logIn" value="Log In" onClick={(e)=>{setActiveModal(e.target.name)}} />
+    //     <input type="button" className="logoutBUutton" name="logOut" value="Log out" onClick={handleLogout}/>
+    //   </nav>
+    //   {activeModal === "signUp" &&
+    //     <SignUpForm setActiveModal = {setActiveModal} resetState={resetState} setCurrentUser={setCurrentUser}/>
+    //   }
+    //   {activeModal === "logIn" &&
+    //     <LoginForm setActiveModal = {setActiveModal} resetState={resetState} setCurrentUser={setCurrentUser}/>
+    //   }
+    //   {
+    //     activeModal === "addTodo" &&
+    //     <AddTodoForm 
+    //       handleChange={handleChange}
+    //       handleSubmit={handleSubmit}
+    //       editingId={editingId} 
+    //       todo={todo}
+    //       toggleAddForm = {toggleAddForm}
+    //     />
+    //   }
+    //   <h1 className="appTitle">Todo App</h1>
+    //   {activeModal === "addTodo" || <AddTodoButton className="AddTodoButton" setActiveModal={setActiveModal}/>}
+      
+    //   <TodosList 
+    //     listItems={todos}
+    //     handleComplete={handleComplete} 
+    //     prepEdit={prepEdit} 
+    //     editingId={editingId}
+    //     handleDelete={handleDelete}
+    //   />
+    // </div>
   )
 }
 

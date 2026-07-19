@@ -21,11 +21,6 @@ export const ItemDescription = ({id, text}) => {
     
     return(
         <div className="itemDescription" key={id}>
-            {/* <div className="expandButton">
-                <div className="arrowIndicator" id="leftSide"></div>
-                <div className="arrowIndicator" id="rightSide"></div>
-            </div> */}
-
             <p 
                 className={`descriptionText ${expanded? "expanded": ""}`} 
                 key={id}

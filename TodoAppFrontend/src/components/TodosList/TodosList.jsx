@@ -4,10 +4,10 @@ export const TodosList = ({listItems, handleComplete, prepEdit, editingId, handl
     return(
         <div className="todoList">
             {
-                listItems.map((todo)=>{
+                listItems.map((todo, i)=>{
                     return(
                         <TodoItem
-                            key={todo.id} 
+                            key={`todo${i}`} 
                             data={todo} 
                             handleComplete={handleComplete} 
                             prepEdit={prepEdit} 

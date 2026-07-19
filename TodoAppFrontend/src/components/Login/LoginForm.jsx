@@ -1,7 +1,8 @@
 import "./LoginForm.css"
 import { useState } from "react"
+import { userLogin } from "../../services/user.service.js"
 
-export const LoginForm = ({setActiveModal}) => {
+export const LoginForm = ({setActiveModal, setCurrentUser}) => {
     const [loginForm, setLoginForm] = useState({
         email: "",
         password: ""
@@ -16,22 +17,14 @@ export const LoginForm = ({setActiveModal}) => {
     }    
 
     const handleSend = async() => {
-        const response = await fetch("http://localhost:3000/users/login",{
-            method: "POST",
-            credentials: "include",
-            headers:{
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(loginForm)
-        })
-        if(!response.ok) throw new Error("didnt work.")
-        
-        return await response.json()
+        const login = await userLogin(loginForm)
+        // setActiveModal("")
+        setCurrentUser(login.user)
     }
 
     return(
         <div className="loginModal">
-            <div onClick={() => {setActiveModal("")}} >X</div>
+            <>Log In</>
             <form className="loginForm">
                 <label htmlFor="emailInput">Email</label>
                 <input type="text" id="emailInput"  name="email" onChange={handleChange} value={loginForm.email}></input>

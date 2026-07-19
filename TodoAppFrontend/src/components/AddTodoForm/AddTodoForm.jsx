@@ -7,7 +7,7 @@ export const AddTodoForm = ({handleChange, handleSubmit, todo, editingId, toggle
             <form onSubmit={handleSubmit}>
                 <header className="formHeader">
                     <h3>{`${editingId? "Edit": "Add"} a Todo`}</h3>
-                    <button className = "addFormCloseButton" onClick={()=>{toggleAddForm("close")}}>X</button>
+                    <button className = "addFormCloseButton" type="button" onClick={()=>{toggleAddForm("close")}}>X</button>
                 </header>
                 <label htmlFor="itemInput">Item</label>
                 <input 
